@@ -151,6 +151,7 @@ func (c *Client) sendHTTP(ctx context.Context, op *requestOp, msg interface{}) e
 	if err := json.NewDecoder(respBody).Decode(&respmsg); err != nil {
 		return err
 	}
+
 	op.resp <- &respmsg
 	return nil
 }

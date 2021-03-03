@@ -28,6 +28,8 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/ChainSafe/chainbridge-utils/crypto"
+	//"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 )
 
@@ -469,7 +471,28 @@ func (c *Client) newMessage(method string, paramsIn ...interface{}) (*jsonrpcMes
 	msg := &jsonrpcMessage{Version: vsn, ID: c.nextID(), Method: method}
 	if paramsIn != nil { // prevent sending "params":null
 		var err error
-		if msg.Params, err = json.Marshal(paramsIn); err != nil {
+		res := [2]interface{}{}
+
+		for i, e := range paramsIn {
+			//var bech32address ethcommon.Address
+			byteKey := []byte(fmt.Sprintf("%b", e.(interface{})))
+			if len(byteKey) == 20 {
+				//fmt.Printf("%v\n", e.(interface{}))
+				//bytekey := e.(interface{})[:]
+				//key := bytes.ToLower(byteKey)
+				fmt.Printf("%b\n", byteKey)
+				bech32addr, _ := crypto.ConvertAndEncode("atp", byteKey)
+				//var bytes = []byte(bech32addr)
+				//bech32address := ethcommon.BytesToAddress(bytes)
+				//res[i] = bech32address
+				fmt.Printf("bech32Address: %v\n", bech32addr)
+				res[i] = bech32addr
+			}else{
+				res[i] = e
+			}
+		}
+
+		if msg.Params, err = json.Marshal(res); err != nil {
 			return nil, err
 		}
 	}
