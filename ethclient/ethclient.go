@@ -455,6 +455,11 @@ func (ec *Client) PendingNonceAt(ctx context.Context, account common.Address) (u
 	err := ec.c.CallContext(ctx, &result, "platon_getTransactionCount", account, "pending")
 	return uint64(result), err
 }
+//func (ec *Client) PendingNonceAt(ctx context.Context, account string) (uint64, error) {
+//	var result hexutil.Uint64
+//	err := ec.c.CallContext(ctx, &result, "platon_getTransactionCount", account, "pending")
+//	return uint64(result), err
+//}
 
 // PendingTransactionCount returns the total number of transactions in the pending state.
 func (ec *Client) PendingTransactionCount(ctx context.Context) (uint, error) {

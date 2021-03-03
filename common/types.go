@@ -28,6 +28,8 @@ import (
 	"reflect"
 	"strings"
 
+	//"github.com/ChainSafe/chainbridge-utils/crypto"
+	"github.com/enigmampc/btcutil/bech32"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"golang.org/x/crypto/sha3"
 )
@@ -273,6 +275,8 @@ func (a Address) hex() []byte {
 // Address supports the %v, %s, %v, %x, %X and %d format verbs.
 func (a Address) Format(s fmt.State, c rune) {
 	switch c {
+	case 'b':
+		s.Write(a.Bytes())
 	case 'v', 's':
 		s.Write(a.checksumHex())
 	case 'q':
@@ -318,6 +322,15 @@ func (a *Address) UnmarshalText(input []byte) error {
 
 // UnmarshalJSON parses a hash in hex syntax.
 func (a *Address) UnmarshalJSON(input []byte) error {
+	if len(input) == 44 {
+		rawbBech32Address := string(input)
+		bech32Address := strings.Replace(rawbBech32Address, "\"", "", -1)
+		_, bridgeByte, _ := bech32.Decode(bech32Address, 1023)
+		atpConverted, _ := bech32.ConvertBits(bridgeByte, 5, 8, false)
+		address := BytesToAddress(atpConverted)
+		str := "\"" + address.String() + "\""
+		return hexutil.UnmarshalFixedJSON(addressT, []byte(str), address[:])
+	}
 	return hexutil.UnmarshalFixedJSON(addressT, input, a[:])
 }
 
