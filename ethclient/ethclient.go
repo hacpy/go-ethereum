@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/ChainSafe/chainbridge-utils/crypto"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -405,8 +406,13 @@ func (ec *Client) SubscribeFilterLogs(ctx context.Context, q ethereum.FilterQuer
 }
 
 func toFilterArg(q ethereum.FilterQuery) (interface{}, error) {
+	var Addresses []string
+	for _, addr := range q.Addresses {
+		atpAddress, _ := crypto.ConvertAndEncode("atp", addr.Bytes())
+		Addresses = append(Addresses, atpAddress)
+	}
 	arg := map[string]interface{}{
-		"address": q.Addresses,
+		"address": Addresses,
 		"topics":  q.Topics,
 	}
 	if q.BlockHash != nil {
@@ -455,6 +461,7 @@ func (ec *Client) PendingNonceAt(ctx context.Context, account common.Address) (u
 	err := ec.c.CallContext(ctx, &result, "platon_getTransactionCount", account, "pending")
 	return uint64(result), err
 }
+
 //func (ec *Client) PendingNonceAt(ctx context.Context, account string) (uint64, error) {
 //	var result hexutil.Uint64
 //	err := ec.c.CallContext(ctx, &result, "platon_getTransactionCount", account, "pending")
