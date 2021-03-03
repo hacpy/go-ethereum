@@ -23,15 +23,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/btcsuite/btcutil/bech32"
 	"math/big"
 	"math/rand"
 	"reflect"
 	"strings"
 
-	//"github.com/ChainSafe/chainbridge-utils/crypto"
-	"github.com/enigmampc/btcutil/bech32"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"golang.org/x/crypto/sha3"
+	//"github.com/ChainSafe/chainbridge-utils/crypto"
 )
 
 // Lengths of hashes and addresses in bytes.
@@ -115,6 +115,14 @@ func (h Hash) Format(s fmt.State, c rune) {
 	default:
 		fmt.Fprintf(s, "%%!%c(hash=%x)", c, h)
 	}
+}
+
+// convert atp address to eth address
+func PlatonToEth(atpAddress string) string {
+	_, bridgeByte, _ := bech32.Decode(atpAddress, 1023)
+	bridgeConverted, _ := bech32.ConvertBits(bridgeByte, 5, 8, false)
+	bridgeAddress := BytesToAddress(bridgeConverted)
+	return bridgeAddress.String()
 }
 
 // UnmarshalText parses a hash in hex syntax.
@@ -325,7 +333,7 @@ func (a *Address) UnmarshalJSON(input []byte) error {
 	if len(input) == 44 {
 		rawbBech32Address := string(input)
 		bech32Address := strings.Replace(rawbBech32Address, "\"", "", -1)
-		_, bridgeByte, _ := bech32.Decode(bech32Address, 1023)
+		_, bridgeByte, _ := bech32.Decode(bech32Address)
 		atpConverted, _ := bech32.ConvertBits(bridgeByte, 5, 8, false)
 		address := BytesToAddress(atpConverted)
 		str := "\"" + address.String() + "\""

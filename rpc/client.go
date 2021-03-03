@@ -469,33 +469,27 @@ func (c *Client) Subscribe(ctx context.Context, namespace string, channel interf
 
 func (c *Client) newMessage(method string, paramsIn ...interface{}) (*jsonrpcMessage, error) {
 	msg := &jsonrpcMessage{Version: vsn, ID: c.nextID(), Method: method}
+
 	if paramsIn != nil { // prevent sending "params":null
 		var err error
-		res := [2]interface{}{}
-
-		for i, e := range paramsIn {
-			//var bech32address ethcommon.Address
+		res := []interface{}{}
+		for _, e := range paramsIn {
 			byteKey := []byte(fmt.Sprintf("%b", e.(interface{})))
 			if len(byteKey) == 20 {
-				//fmt.Printf("%v\n", e.(interface{}))
-				//bytekey := e.(interface{})[:]
-				//key := bytes.ToLower(byteKey)
 				fmt.Printf("%b\n", byteKey)
 				bech32addr, _ := crypto.ConvertAndEncode("atp", byteKey)
-				//var bytes = []byte(bech32addr)
-				//bech32address := ethcommon.BytesToAddress(bytes)
-				//res[i] = bech32address
+
 				fmt.Printf("bech32Address: %v\n", bech32addr)
-				res[i] = bech32addr
-			}else{
-				res[i] = e
+				res = append(res, bech32addr)
+			} else {
+				res = append(res, e)
 			}
 		}
-
 		if msg.Params, err = json.Marshal(res); err != nil {
 			return nil, err
 		}
 	}
+
 	return msg, nil
 }
 
