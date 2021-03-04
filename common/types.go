@@ -119,7 +119,7 @@ func (h Hash) Format(s fmt.State, c rune) {
 
 // convert atp address to eth address
 func PlatonToEth(atpAddress string) string {
-	_, bridgeByte, _ := bech32.Decode(atpAddress, 1023)
+	_, bridgeByte, _ := bech32.Decode(atpAddress)
 	bridgeConverted, _ := bech32.ConvertBits(bridgeByte, 5, 8, false)
 	bridgeAddress := BytesToAddress(bridgeConverted)
 	return bridgeAddress.String()
