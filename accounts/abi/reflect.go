@@ -19,7 +19,7 @@ package abi
 import (
 	"errors"
 	"fmt"
-	"github.com/ChainSafe/chainbridge-utils/crypto"
+	//"github.com/ChainSafe/chainbridge-utils/crypto"
 	"math/big"
 	"reflect"
 	"strings"
@@ -37,21 +37,26 @@ import (
 // into
 // type TupleT struct { X *big.Int }
 func ConvertType(in interface{}, proto interface{}) interface{} {
-	if in != nil { // prevent sending "params":null
-		var res []interface{}
-		for _, e := range in.([]interface{}) {
-			byteKey := fmt.Sprintf("%s", e.(interface{}))
-			if len(byteKey) == 32 {
-				fmt.Printf("%v\n", byteKey)
-				_, ethAddress, _ := crypto.DecodeAndConvert(byteKey)
-				fmt.Printf("ethAddress: %v\n", ethAddress)
-				res = append(res, ethAddress)
-			} else {
-				res = append(res, e)
-			}
-		}
-	}
-
+	//if in != nil { // prevent sending "params":null
+	//	var res []interface{}
+	//	for i, param := range in.([]interface{}) {
+	//		paramType := reflect.TypeOf(param)
+	//		paramValue := reflect.ValueOf(param)
+	//		fmt.Printf("paramType %d is %v\n", i, paramType)
+	//		fmt.Printf("paramValue %d is %v\n", i, paramValue)
+	//		fmt.Printf("paramValue.Name %d is %v\n", i, paramType.Name())
+	//
+	//		if paramType.Name() == "Address" {
+	//			byteKey := []byte(fmt.Sprintf("%b", param.(interface{})))
+	//			fmt.Printf("NewMessage parse a field of CommonAddress\n")
+	//			platon, _ := common.EthToPlaton(byteKey)
+	//			fmt.Printf("NewMessage To Alaya Contract: add is %v\n", platon)
+	//			res = append(res, platon)
+	//		} else {
+	//			res = append(res, param)
+	//		}
+	//	}
+	//}
 	protoType := reflect.TypeOf(proto)
 	if reflect.TypeOf(in).ConvertibleTo(protoType) {
 		return reflect.ValueOf(in).Convert(protoType).Interface()

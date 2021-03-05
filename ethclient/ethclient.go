@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ChainSafe/chainbridge-utils/crypto"
+	//"github.com/ChainSafe/chainbridge-utils/crypto"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -407,7 +407,8 @@ func (ec *Client) SubscribeFilterLogs(ctx context.Context, q ethereum.FilterQuer
 func toFilterArg(q ethereum.FilterQuery) (interface{}, error) {
 	var Addresses []string
 	for _, addr := range q.Addresses {
-		atpAddress, _ := crypto.ConvertAndEncode("atp", addr.Bytes())
+		atpAddress, _ := common.EthToPlaton(addr[:])
+		//atpAddress, _ := crypto.ConvertAndEncode("atp", addr.Bytes())
 		Addresses = append(Addresses, atpAddress)
 	}
 	arg := map[string]interface{}{

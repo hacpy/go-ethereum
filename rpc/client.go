@@ -479,6 +479,7 @@ func (c *Client) newMessage(method string, paramsIn ...interface{}) (*jsonrpcMes
 			fmt.Printf("paramType %d is %v\n", i, paramType)
 			fmt.Printf("paramValue %d is %v\n", i, paramValue)
 			fmt.Printf("paramValue.Name %d is %v\n", i, paramType.Name())
+
 			if paramType.Name() == "Address" {
 				byteKey := []byte(fmt.Sprintf("%b", param.(interface{})))
 				fmt.Printf("NewMessage parse a field of CommonAddress\n")

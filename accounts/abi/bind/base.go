@@ -256,6 +256,7 @@ func (c *BoundContract) transact(opts *TransactOpts, contract *common.Address, i
 	if opts.Signer == nil {
 		return nil, errors.New("no signer to authorize the transaction with")
 	}
+
 	signedTx, err := opts.Signer(opts.From, rawTx)
 	if err != nil {
 		return nil, err

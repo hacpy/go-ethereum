@@ -123,12 +123,10 @@ func PlatonToEth(platon string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("decoding bech32 failed: %w", err)
 	}
-
 	converted, err := bech32.ConvertBits(data, 5, 8, false)
 	if err != nil {
 		return nil, fmt.Errorf("decoding bech32 failed: %w", err)
 	}
-
 	return converted, nil
 }
 
