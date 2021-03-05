@@ -318,6 +318,7 @@ func (c *Client) CallContext(ctx context.Context, result interface{}, method str
 	case len(resp.Result) == 0:
 		return ErrNoResult
 	default:
+		fmt.Printf("resp: %v\n", resp.Error)
 		return json.Unmarshal(resp.Result, &result)
 	}
 }
@@ -473,18 +474,17 @@ func (c *Client) newMessage(method string, paramsIn ...interface{}) (*jsonrpcMes
 	if paramsIn != nil { // prevent sending "params":null
 		var err error
 		var res []interface{}
-		for i, param := range paramsIn {
+		for _, param := range paramsIn {
 			paramType := reflect.TypeOf(param)
-			paramValue := reflect.ValueOf(param)
-			fmt.Printf("paramType %d is %v\n", i, paramType)
-			fmt.Printf("paramValue %d is %v\n", i, paramValue)
-			fmt.Printf("paramValue.Name %d is %v\n", i, paramType.Name())
-
+			//paramValue := reflect.ValueOf(param)
+			//fmt.Printf("paramType %d is %v\n", i, paramType)
+			//fmt.Printf("paramValue %d is %v\n", i, paramValue)
+			//fmt.Printf("paramValue.Name %d is %v\n", i, paramType.Name())
 			if paramType.Name() == "Address" {
 				byteKey := []byte(fmt.Sprintf("%b", param.(interface{})))
-				fmt.Printf("NewMessage parse a field of CommonAddress\n")
+				//fmt.Printf("NewMessage parse a field of CommonAddress\n")
 				platon, _ := common.EthToPlaton(byteKey)
-				fmt.Printf("NewMessage To Alaya Contract: add is %v\n", platon)
+				//fmt.Printf("NewMessage To Alaya Contract: add is %v\n", platon)
 				res = append(res, platon)
 			} else {
 				res = append(res, param)

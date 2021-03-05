@@ -19,6 +19,8 @@ package abi
 import (
 	"errors"
 	"fmt"
+	//"github.com/ethereum/go-ethereum/common"
+
 	//"github.com/ChainSafe/chainbridge-utils/crypto"
 	"math/big"
 	"reflect"
@@ -37,9 +39,19 @@ import (
 // into
 // type TupleT struct { X *big.Int }
 func ConvertType(in interface{}, proto interface{}) interface{} {
+
+	//type Out struct {
+	//	Status uint8
+	//	YesVote *big.Int
+	//	YesVotesTotal uint8
+	//	ProposedBlock *big.Int
+	//}
+
+	//var res []interface{}
 	//if in != nil { // prevent sending "params":null
-	//	var res []interface{}
-	//	for i, param := range in.([]interface{}) {
+	//	out := in.(Out)
+	//
+	//	for i, param := range in.(out) {
 	//		paramType := reflect.TypeOf(param)
 	//		paramValue := reflect.ValueOf(param)
 	//		fmt.Printf("paramType %d is %v\n", i, paramType)
