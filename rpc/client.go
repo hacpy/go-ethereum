@@ -22,13 +22,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common"
 	"net/url"
 	"reflect"
 	"strconv"
 	"sync/atomic"
 	"time"
 
-	"github.com/ChainSafe/chainbridge-utils/crypto"
 	//"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 )
@@ -472,17 +472,21 @@ func (c *Client) newMessage(method string, paramsIn ...interface{}) (*jsonrpcMes
 
 	if paramsIn != nil { // prevent sending "params":null
 		var err error
-		res := []interface{}{}
-		for _, e := range paramsIn {
-			byteKey := []byte(fmt.Sprintf("%b", e.(interface{})))
-			if len(byteKey) == 20 {
-				fmt.Printf("%b\n", byteKey)
-				bech32addr, _ := crypto.ConvertAndEncode("atp", byteKey)
-
-				fmt.Printf("bech32Address: %v\n", bech32addr)
-				res = append(res, bech32addr)
+		var res []interface{}
+		for i, param := range paramsIn {
+			paramType := reflect.TypeOf(param)
+			paramValue := reflect.ValueOf(param)
+			fmt.Printf("paramType %d is %v\n", i, paramType)
+			fmt.Printf("paramValue %d is %v\n", i, paramValue)
+			fmt.Printf("paramValue.Name %d is %v\n", i, paramType.Name())
+			if paramType.Name() == "Address" {
+				byteKey := []byte(fmt.Sprintf("%b", param.(interface{})))
+				fmt.Printf("NewMessage parse a field of CommonAddress\n")
+				platon, _ := common.EthToPlaton(byteKey)
+				fmt.Printf("NewMessage To Alaya Contract: add is %v\n", platon)
+				res = append(res, platon)
 			} else {
-				res = append(res, e)
+				res = append(res, param)
 			}
 		}
 		if msg.Params, err = json.Marshal(res); err != nil {

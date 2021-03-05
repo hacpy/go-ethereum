@@ -540,10 +540,17 @@ func (ec *Client) SendTransaction(ctx context.Context, tx *types.Transaction) er
 }
 
 func toCallArg(msg ethereum.CallMsg) interface{} {
+	platonFrom, _ := common.EthToPlaton(msg.From[:])
+	platonTo, _ := common.EthToPlaton(msg.To[:])
+
 	arg := map[string]interface{}{
-		"from": msg.From,
-		"to":   msg.To,
+		"from": platonFrom,
+		"to":   platonTo,
 	}
+
+	fmt.Printf("toCallArg: from is %v\n", msg.From)
+	fmt.Printf("toCallArg: to is %v\n", msg.To)
+
 	if len(msg.Data) > 0 {
 		arg["data"] = hexutil.Bytes(msg.Data)
 	}

@@ -117,12 +117,29 @@ func (h Hash) Format(s fmt.State, c rune) {
 	}
 }
 
-// convert atp address to eth address
-func PlatonToEth(atpAddress string) string {
-	_, bridgeByte, _ := bech32.Decode(atpAddress)
-	bridgeConverted, _ := bech32.ConvertBits(bridgeByte, 5, 8, false)
-	bridgeAddress := BytesToAddress(bridgeConverted)
-	return bridgeAddress.String()
+// DecodeAndConvert decodes a bech32 encoded string and converts to base64 encoded bytes.
+func PlatonToEth(platon string) ([]byte, error) {
+	_, data, err := bech32.Decode(platon)
+	if err != nil {
+		return nil, fmt.Errorf("decoding bech32 failed: %w", err)
+	}
+
+	converted, err := bech32.ConvertBits(data, 5, 8, false)
+	if err != nil {
+		return nil, fmt.Errorf("decoding bech32 failed: %w", err)
+	}
+
+	return converted, nil
+}
+
+// EthToPlaton converts from a base64 encoded byte string to base32 encoded byte string and then to bech32.
+func EthToPlaton(eth []byte) (string, error) {
+	converted, err := bech32.ConvertBits(eth, 8, 5, true)
+	if err != nil {
+		return "", fmt.Errorf("encoding bech32 failed: %w", err)
+	}
+
+	return bech32.Encode("atp", converted)
 }
 
 // UnmarshalText parses a hash in hex syntax.

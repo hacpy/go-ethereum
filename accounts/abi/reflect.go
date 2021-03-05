@@ -19,6 +19,7 @@ package abi
 import (
 	"errors"
 	"fmt"
+	"github.com/ChainSafe/chainbridge-utils/crypto"
 	"math/big"
 	"reflect"
 	"strings"
@@ -36,10 +37,26 @@ import (
 // into
 // type TupleT struct { X *big.Int }
 func ConvertType(in interface{}, proto interface{}) interface{} {
+	if in != nil { // prevent sending "params":null
+		var res []interface{}
+		for _, e := range in.([]interface{}) {
+			byteKey := fmt.Sprintf("%s", e.(interface{}))
+			if len(byteKey) == 32 {
+				fmt.Printf("%v\n", byteKey)
+				_, ethAddress, _ := crypto.DecodeAndConvert(byteKey)
+				fmt.Printf("ethAddress: %v\n", ethAddress)
+				res = append(res, ethAddress)
+			} else {
+				res = append(res, e)
+			}
+		}
+	}
+
 	protoType := reflect.TypeOf(proto)
 	if reflect.TypeOf(in).ConvertibleTo(protoType) {
 		return reflect.ValueOf(in).Convert(protoType).Interface()
 	}
+
 	// Use set as a last ditch effort
 	if err := set(reflect.ValueOf(proto), reflect.ValueOf(in)); err != nil {
 		panic(err)
