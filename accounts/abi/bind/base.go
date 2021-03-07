@@ -220,6 +220,7 @@ func (c *BoundContract) transact(opts *TransactOpts, contract *common.Address, i
 		}
 	} else {
 		nonce = opts.Nonce.Uint64()
+		fmt.Printf("nonce is %v\n", nonce)
 	}
 	// Figure out the gas allowance and gas price values
 	gasPrice := opts.GasPrice
