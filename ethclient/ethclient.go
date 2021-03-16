@@ -549,8 +549,8 @@ func toCallArg(msg ethereum.CallMsg) interface{} {
 		"to":   platonTo,
 	}
 
-	fmt.Printf("toCallArg: from is %v\n", msg.From)
-	fmt.Printf("toCallArg: to is %v\n", msg.To)
+	//fmt.Printf("toCallArg: from is %v\n", msg.From)
+	//fmt.Printf("toCallArg: to is %v\n", msg.To)
 
 	if len(msg.Data) > 0 {
 		arg["data"] = hexutil.Bytes(msg.Data)

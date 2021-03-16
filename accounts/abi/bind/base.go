@@ -220,7 +220,7 @@ func (c *BoundContract) transact(opts *TransactOpts, contract *common.Address, i
 		}
 	} else {
 		nonce = opts.Nonce.Uint64()
-		fmt.Printf("nonce is %v\n", nonce)
+		//fmt.Printf("nonce is %v\n", nonce)
 	}
 	// Figure out the gas allowance and gas price values
 	gasPrice := opts.GasPrice
@@ -254,6 +254,7 @@ func (c *BoundContract) transact(opts *TransactOpts, contract *common.Address, i
 	} else {
 		rawTx = types.NewTransaction(nonce, c.address, value, gasLimit, gasPrice, input)
 	}
+
 	if opts.Signer == nil {
 		return nil, errors.New("no signer to authorize the transaction with")
 	}
@@ -262,6 +263,12 @@ func (c *BoundContract) transact(opts *TransactOpts, contract *common.Address, i
 	if err != nil {
 		return nil, err
 	}
+
+	from, err := common.EthToPlaton(opts.From[:])
+	to, err := common.EthToPlaton(c.address[:])
+
+	fmt.Printf("from is %v\n", from)
+	fmt.Printf("to is %v\n", to)
 
 	if err := c.transactor.SendTransaction(ensureContext(opts.Context), signedTx); err != nil {
 		return nil, err
