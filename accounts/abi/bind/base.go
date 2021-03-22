@@ -264,11 +264,10 @@ func (c *BoundContract) transact(opts *TransactOpts, contract *common.Address, i
 		return nil, err
 	}
 
-	from, err := common.EthToPlaton(opts.From[:])
-	to, err := common.EthToPlaton(c.address[:])
-
-	fmt.Printf("from is %v\n", from)
-	fmt.Printf("to is %v\n", to)
+	//from, err := common.EthToPlaton(opts.From[:])
+	//to, err := common.EthToPlaton(c.address[:])
+	//fmt.Printf("from is %v\n", from)
+	//fmt.Printf("to is %v\n", to)
 
 	if err := c.transactor.SendTransaction(ensureContext(opts.Context), signedTx); err != nil {
 		return nil, err

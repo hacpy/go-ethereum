@@ -1,6 +1,7 @@
 module github.com/ethereum/go-ethereum
 
 go 1.13
+
 replace github.com/ChainSafe/chainbridge-utils v1.0.6 => github.com/rjman-self/chainbridge-utils v1.0.7
 
 require (
