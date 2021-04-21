@@ -42,6 +42,13 @@ const (
 	AddressLength = 20
 )
 
+const (
+	Alaya     string = "alaya"
+	AlayaTest string = "alaya-test"
+	PlatON    string = "platon"
+)
+
+
 var (
 	hashT    = reflect.TypeOf(Hash{})
 	addressT = reflect.TypeOf(Address{})
@@ -131,13 +138,13 @@ func PlatonToEth(platon string) ([]byte, error) {
 }
 
 // EthToPlaton converts from a base64 encoded byte string to base32 encoded byte string and then to bech32.
-func EthToPlaton(eth []byte) (string, error) {
+func EthToPlaton(hrp string, eth []byte) (string, error) {
 	converted, err := bech32.ConvertBits(eth, 8, 5, true)
 	if err != nil {
 		return "", fmt.Errorf("encoding bech32 failed: %w", err)
 	}
 
-	return bech32.Encode("atp", converted)
+	return bech32.Encode(hrp , converted)
 }
 
 // UnmarshalText parses a hash in hex syntax.

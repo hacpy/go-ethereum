@@ -76,6 +76,8 @@ type BatchElem struct {
 
 // Client represents a connection to an RPC server.
 type Client struct {
+	chainId  uint64
+	chainName string
 	idgen    func() ID // for subscriptions
 	isHTTP   bool
 	services *serviceRegistry
@@ -483,7 +485,20 @@ func (c *Client) newMessage(method string, paramsIn ...interface{}) (*jsonrpcMes
 			if paramType.Name() == "Address" {
 				byteKey := []byte(fmt.Sprintf("%b", param.(interface{})))
 				//fmt.Printf("NewMessage parse a field of CommonAddress\n")
-				platon, _ := common.EthToPlaton(byteKey)
+
+				var hrp string
+				switch c.chainName {
+				case common.Alaya:
+					hrp = "atp"
+				case common.AlayaTest:
+					hrp = "atp"
+				case common.PlatON:
+					hrp = "lat"
+				default:
+					hrp = "atp"
+				}
+
+				platon, _ := common.EthToPlaton(hrp, byteKey)
 				//fmt.Printf("NewMessage To Alaya Contract: add is %v\n", platon)
 				res = append(res, platon)
 			} else {
@@ -663,4 +678,19 @@ func (c *Client) read(codec ServerCodec) {
 		}
 		c.readOp <- readOp{msgs, batch}
 	}
+}
+
+func (c *Client) SetChainId(chainId uint64) {
+	c.chainId = chainId
+}
+
+func (c *Client) GetChainId() uint64 {
+	return c.chainId
+}
+func (c *Client) SetChainName(chainName string) {
+	c.chainName = chainName
+}
+
+func (c *Client) GetChainName() string {
+	return c.chainName
 }

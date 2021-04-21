@@ -71,6 +71,23 @@ func (ec *Client) ChainID(ctx context.Context) (*big.Int, error) {
 	return (*big.Int)(&result), err
 }
 
+func (ec *Client) SetChainID(chainId uint64) {
+	ec.c.SetChainId(chainId)
+}
+
+func (ec *Client) GetChainID() uint64 {
+	return ec.c.GetChainId()
+}
+
+func (ec *Client) SetChainName(chainName string) {
+	ec.c.SetChainName(chainName)
+}
+
+func (ec *Client) GetChainName() string {
+	return ec.c.GetChainName()
+}
+
+
 // BlockByHash returns the given full block.
 //
 // Note that loading full blocks requires two requests. Use HeaderByHash
@@ -387,7 +404,8 @@ func (ec *Client) NonceAt(ctx context.Context, account common.Address, blockNumb
 // FilterLogs executes a filter query.
 func (ec *Client) FilterLogs(ctx context.Context, q ethereum.FilterQuery) ([]types.Log, error) {
 	var result []types.Log
-	arg, err := toFilterArg(q)
+	hrp := ec.GetHrp()
+	arg, err := toFilterArg(hrp, q)
 	if err != nil {
 		return nil, err
 	}
@@ -397,17 +415,18 @@ func (ec *Client) FilterLogs(ctx context.Context, q ethereum.FilterQuery) ([]typ
 
 // SubscribeFilterLogs subscribes to the results of a streaming filter query.
 func (ec *Client) SubscribeFilterLogs(ctx context.Context, q ethereum.FilterQuery, ch chan<- types.Log) (ethereum.Subscription, error) {
-	arg, err := toFilterArg(q)
+	hrp := ec.GetHrp()
+	arg, err := toFilterArg(hrp, q)
 	if err != nil {
 		return nil, err
 	}
 	return ec.c.EthSubscribe(ctx, ch, "logs", arg)
 }
 
-func toFilterArg(q ethereum.FilterQuery) (interface{}, error) {
+func toFilterArg(hrp string, q ethereum.FilterQuery) (interface{}, error) {
 	var Addresses []string
 	for _, addr := range q.Addresses {
-		atpAddress, _ := common.EthToPlaton(addr[:])
+		atpAddress, _ := common.EthToPlaton(hrp, addr[:])
 		//atpAddress, _ := crypto.ConvertAndEncode("atp", addr.Bytes())
 		Addresses = append(Addresses, atpAddress)
 	}
@@ -487,18 +506,33 @@ func (ec *Client) PendingTransactionCount(ctx context.Context) (uint, error) {
 // blocks might not be available.
 func (ec *Client) CallContract(ctx context.Context, msg ethereum.CallMsg, blockNumber *big.Int) ([]byte, error) {
 	var hex hexutil.Bytes
-	err := ec.c.CallContext(ctx, &hex, "platon_call", toCallArg(msg), toBlockNumArg(blockNumber))
+	hrp := ec.GetHrp()
+	err := ec.c.CallContext(ctx, &hex, "platon_call", toCallArg(hrp, msg), toBlockNumArg(blockNumber))
 	if err != nil {
 		return nil, err
 	}
 	return hex, nil
 }
 
+func (ec *Client) GetHrp() string {
+	switch ec.GetChainName() {
+	case common.Alaya:
+		return "atp"
+	case common.AlayaTest:
+		return "atp"
+	case common.PlatON:
+		return "lat"
+	default:
+		return "atp"
+	}
+}
+
 // PendingCallContract executes a message call transaction using the EVM.
 // The state seen by the contract call is the pending state.
 func (ec *Client) PendingCallContract(ctx context.Context, msg ethereum.CallMsg) ([]byte, error) {
 	var hex hexutil.Bytes
-	err := ec.c.CallContext(ctx, &hex, "platon_call", toCallArg(msg), "pending")
+	hrp := ec.GetHrp()
+	err := ec.c.CallContext(ctx, &hex, "platon_call", toCallArg(hrp, msg), "pending")
 	if err != nil {
 		return nil, err
 	}
@@ -521,7 +555,8 @@ func (ec *Client) SuggestGasPrice(ctx context.Context) (*big.Int, error) {
 // but it should provide a basis for setting a reasonable default.
 func (ec *Client) EstimateGas(ctx context.Context, msg ethereum.CallMsg) (uint64, error) {
 	var hex hexutil.Uint64
-	err := ec.c.CallContext(ctx, &hex, "platon_estimateGas", toCallArg(msg))
+	hrp := ec.GetHrp()
+	err := ec.c.CallContext(ctx, &hex, "platon_estimateGas", toCallArg(hrp, msg))
 	if err != nil {
 		return 0, err
 	}
@@ -540,9 +575,9 @@ func (ec *Client) SendTransaction(ctx context.Context, tx *types.Transaction) er
 	return ec.c.CallContext(ctx, nil, "platon_sendRawTransaction", hexutil.Encode(data))
 }
 
-func toCallArg(msg ethereum.CallMsg) interface{} {
-	platonFrom, _ := common.EthToPlaton(msg.From[:])
-	platonTo, _ := common.EthToPlaton(msg.To[:])
+func toCallArg(hrp string, msg ethereum.CallMsg) interface{} {
+	platonFrom, _ := common.EthToPlaton(hrp, msg.From[:])
+	platonTo, _ := common.EthToPlaton(hrp, msg.To[:])
 
 	arg := map[string]interface{}{
 		"from": platonFrom,

@@ -166,7 +166,7 @@ func TestToFilterArg(t *testing.T) {
 		},
 	} {
 		t.Run(testCase.name, func(t *testing.T) {
-			output, err := toFilterArg(testCase.input)
+			output, err := toFilterArg("lat", testCase.input)
 			if (testCase.err == nil) != (err == nil) {
 				t.Fatalf("expected error %v but got %v", testCase.err, err)
 			}
