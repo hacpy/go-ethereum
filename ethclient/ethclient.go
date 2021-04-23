@@ -24,12 +24,12 @@ import (
 	"fmt"
 	"math/big"
 
-	//"github.com/ChainSafe/chainbridge-utils/crypto"
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/rpc"
+	//"github.com/rjman-self/chainbridge-utils/crypto"
+	"github.com/hacpy/go-ethereum"
+	"github.com/hacpy/go-ethereum/common"
+	"github.com/hacpy/go-ethereum/common/hexutil"
+	"github.com/hacpy/go-ethereum/core/types"
+	"github.com/hacpy/go-ethereum/rpc"
 )
 
 // Client defines typed wrappers for the Ethereum RPC API.
@@ -86,7 +86,6 @@ func (ec *Client) SetChainName(chainName string) {
 func (ec *Client) GetChainName() string {
 	return ec.c.GetChainName()
 }
-
 
 // BlockByHash returns the given full block.
 //

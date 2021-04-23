@@ -22,15 +22,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/hacpy/go-ethereum/common"
 	"net/url"
 	"reflect"
 	"strconv"
 	"sync/atomic"
 	"time"
 
-	//"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/log"
+	//"github.com/hacpy/go-ethereum/common"
+	"github.com/hacpy/go-ethereum/log"
 )
 
 var (
@@ -76,11 +76,11 @@ type BatchElem struct {
 
 // Client represents a connection to an RPC server.
 type Client struct {
-	chainId  uint64
+	chainId   uint64
 	chainName string
-	idgen    func() ID // for subscriptions
-	isHTTP   bool
-	services *serviceRegistry
+	idgen     func() ID // for subscriptions
+	isHTTP    bool
+	services  *serviceRegistry
 
 	idCounter uint32
 

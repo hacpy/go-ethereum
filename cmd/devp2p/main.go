@@ -22,9 +22,9 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/ethereum/go-ethereum/internal/debug"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/hacpy/go-ethereum/internal/debug"
+	"github.com/hacpy/go-ethereum/p2p/enode"
+	"github.com/hacpy/go-ethereum/params"
 	"gopkg.in/urfave/cli.v1"
 )
 

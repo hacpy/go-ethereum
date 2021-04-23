@@ -19,9 +19,9 @@ package abi
 import (
 	"errors"
 	"fmt"
-	//"github.com/ethereum/go-ethereum/common"
+	//"github.com/hacpy/go-ethereum/common"
 
-	//"github.com/ChainSafe/chainbridge-utils/crypto"
+	//"github.com/rjman-self/chainbridge-utils/crypto"
 	"math/big"
 	"reflect"
 	"strings"

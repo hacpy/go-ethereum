@@ -29,9 +29,9 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/hacpy/go-ethereum/common/hexutil"
 	"golang.org/x/crypto/sha3"
-	//"github.com/ChainSafe/chainbridge-utils/crypto"
+	//"github.com/rjman-self/chainbridge-utils/crypto"
 )
 
 // Lengths of hashes and addresses in bytes.
@@ -47,7 +47,6 @@ const (
 	AlayaTest string = "alaya-test"
 	PlatON    string = "platon"
 )
-
 
 var (
 	hashT    = reflect.TypeOf(Hash{})
@@ -144,7 +143,7 @@ func EthToPlaton(hrp string, eth []byte) (string, error) {
 		return "", fmt.Errorf("encoding bech32 failed: %w", err)
 	}
 
-	return bech32.Encode(hrp , converted)
+	return bech32.Encode(hrp, converted)
 }
 
 // UnmarshalText parses a hash in hex syntax.

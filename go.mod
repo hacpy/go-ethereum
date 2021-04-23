@@ -1,12 +1,9 @@
-module github.com/ethereum/go-ethereum
+module github.com/hacpy/go-ethereum
 
 go 1.13
 
-replace github.com/ChainSafe/chainbridge-utils v1.0.6 => github.com/rjman-self/chainbridge-utils v1.0.7
-
 require (
 	github.com/Azure/azure-storage-blob-go v0.7.0
-	github.com/ChainSafe/chainbridge-utils v1.0.6
 	github.com/VictoriaMetrics/fastcache v1.5.7
 	github.com/aws/aws-sdk-go v1.25.48
 	github.com/btcsuite/btcd v0.20.1-beta
